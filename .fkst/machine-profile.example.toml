@@ -29,4 +29,7 @@ github-bot-login = "<bot login for this machine>"
 managed-bot-logins = ["<managed bot login>"]
 
 [defaults]
-integration-branch = "<per-device integration branch>"
+# Derived from the bot app identity that drives this machine, not from a device or
+# person name: the bot is the actor, so the branch it integrates on carries its login
+# with the "[bot]" suffix removed. One machine, one bot app, one integration branch.
+integration-branch = "integration-<bot-app-login-without-bot-suffix>"

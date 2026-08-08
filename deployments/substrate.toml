@@ -57,7 +57,7 @@ rollup_merge = "auto"
 [deployment.machine]
 target_checkout = "substrate-target-checkout"
 platform_checkout = "substrate-platform-checkout"
-engine_checkout = "engine-checkout"
+engine_checkout = "substrate-target-checkout"   # the substrate deployment operates the engine itself: one pinned source, one checkout
 engine_binary = "engine-binary"
 durable = "substrate-durable"
 runtime = "substrate-runtime"
