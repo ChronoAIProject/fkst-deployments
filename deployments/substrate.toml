@@ -35,6 +35,15 @@ target_identity = "ChronoAIProject/fkst-substrate"
 # declared here rather than discovered from the machine.
 managed_bot_logins = ["fkst-loning-s-macbook-m5[bot]"]
 
+# How this deployment claims work against peer deployments. Declared rather than
+# inherited from an unset variable: it must stay consistent across the deployment's
+# life and peers must agree about it, unlike the write stance which an operator
+# reverses per run. Held at the posture the peer deployments currently use;
+# changing it is a fleet-wide decision, not one this deployment makes alone.
+[deployment.claim_posture]
+mode = "assignee"
+label_exclusive = false
+
 [deployment.github_devloop_profile]
 version = "1"
 id = "fleet-github-devloop-policy"
