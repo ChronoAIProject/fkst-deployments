@@ -1,0 +1,13 @@
+# Machine-local operational state. NEVER tracked: a real machine profile carries
+# absolute paths and credentials.
+.fkst/machine-profile.toml
+machine-profile.toml
+.env
+
+# Runtime hydration target. The bootstrap clones the pinned mechanism here.
+.fkst/run/
+checkouts/
+
+__pycache__/
+*.pyc
+.pytest_cache/
