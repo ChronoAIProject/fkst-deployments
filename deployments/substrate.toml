@@ -1,5 +1,12 @@
 schema = "fkst.ops.deployment.v1"
 
+# How often the machine-layer cadence keeps this deployment current. Deployment
+# policy, not a machine fact: the mechanism holds no default for it.
+cadence_interval_seconds = 900
+
+# Collaborating managed-bot logins. Authorization membership is deployment policy,
+# so it is declared here rather than discovered from the machine.
+
 [[provider]]
 id = "engine"
 kind = "engine"
@@ -24,6 +31,9 @@ configuration = {}
 [[deployment]]
 id = "substrate"
 target_identity = "ChronoAIProject/fkst-substrate"
+# Collaborating managed-bot logins: authorization membership is deployment policy,
+# declared here rather than discovered from the machine.
+managed_bot_logins = ["fkst-loning-s-macbook-m5[bot]"]
 
 [deployment.github_devloop_profile]
 version = "1"
@@ -51,7 +61,7 @@ host = []
 
 [deployment.integration]
 upstream_branch = "dev"
-integration_branch = "machine:integration-branch"
+integration_branch = "integration-fkst-loning-s-macbook-m5"
 rollup_merge = "auto"
 
 [deployment.machine]
