@@ -414,7 +414,7 @@ python3 <verified-fkst-ops-checkout>/schema/validator.py \
 
 Direct absolute-path invocation works from any working directory because the script establishes its checkout import root before importing `schema.provider_surface`; it is equivalent to `python3 -m schema.validator`. The CLI accepts exactly `declaration`, `machine_profile`, and `lock`, emits resolved JSON on success, and exits `2` with a fail-closed diagnostic on validation failure. (`fkst-ops/schema/validator.py:15-18,364-393`; `fkst-ops/tests/schema/test_validator.py:241-257`)
 
-The mechanism suite was executed in one process as `python3 -m pytest -q`: `132 passed, 21 skipped`, exit `0`. This is dynamic verification of the inspected checkout, not validation of any declaration in this repository.
+The mechanism suite was executed in one process as `python3 -m pytest -q`: `136 passed, 21 skipped, 14 subtests passed`, exit `0` (recorded at `fkst-ops` commit `3d8f630`). This is dynamic verification of the inspected checkout, not validation of any declaration in this repository.
 
 The operational path uses the bootstrap so pin and tree authentication precede validation:
 
