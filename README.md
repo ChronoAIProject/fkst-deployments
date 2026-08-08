@@ -69,6 +69,18 @@ declared upstream branch.
 
 ## Preflight and operate
 
+`cadence_enabled` and `cadence_interval_seconds` are required repository-level
+schedule policy. Each deployment also requires `github_write_enabled`; starts and
+automatic restarts use that declared value and do not inherit an operator shell.
+Generation reconciles the user LaunchAgent on every run and prints whether it is
+live.
+
+The cadence does not update this repository. This keeps declaration and mechanism-pin
+adoption deliberate: update the local `fkst-deployments` checkout, inspect the pin
+change, then rerun generation. An operator who wants automatic adoption must arrange
+a separate verified updater for this repository before generation; the cadence itself
+will not cross that control boundary.
+
 Set `DEPLOYMENT_REPO` to this repository's absolute path and choose `packages`
 or `substrate` as `NAME`. Run the complete entrypoint from any `fkst-ops`
 checkout; it self-pins through [`fkst.lock`](fkst.lock):

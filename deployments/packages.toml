@@ -2,6 +2,7 @@ schema = "fkst.ops.deployment.v1"
 
 # How often the machine-layer cadence keeps this deployment current. Deployment
 # policy, not a machine fact: the mechanism holds no default for it.
+cadence_enabled = true
 cadence_interval_seconds = 900
 
 # Collaborating managed-bot logins. Authorization membership is deployment policy,
@@ -38,14 +39,15 @@ configuration = {}
 [[deployment]]
 id = "packages"
 target_identity = "ChronoAIProject/fkst-packages"
+github_write_enabled = true
 # Collaborating managed-bot logins: authorization membership is deployment policy,
 # declared here rather than discovered from the machine.
 managed_bot_logins = ["fkst-loning-s-macbook-m5[bot]"]
 
 # How this deployment claims work against peer deployments. Declared rather than
 # inherited from an unset variable: it must stay consistent across the deployment's
-# life and peers must agree about it, unlike the write stance which an operator
-# reverses per run. Held at the posture the peer deployments currently use;
+# life and peers must agree about it. The write stance is also declared above so
+# an unattended restart cannot silently change it. Held at the posture peers use;
 # changing it is a fleet-wide decision, not one this deployment makes alone.
 [deployment.claim_posture]
 mode = "assignee"
