@@ -83,7 +83,7 @@ rollup_merge = "auto"
 [deployment.machine]
 target_checkout = "packages-checkout"
 platform_checkout = "packages-checkout"
-engine_checkout = "engine-checkout"
+engine_checkout = "fkst-substrate-checkout"     # the same single checkout of the engine source that the substrate deployment operates
 engine_binary = "engine-binary"
 durable = "packages-durable"
 runtime = "packages-runtime"

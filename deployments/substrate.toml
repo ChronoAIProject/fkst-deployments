@@ -81,9 +81,9 @@ integration_branch = "integration-fkst-loning-s-macbook-m5"
 rollup_merge = "auto"
 
 [deployment.machine]
-target_checkout = "substrate-target-checkout"
+target_checkout = "fkst-substrate-checkout"
 platform_checkout = "substrate-platform-checkout"
-engine_checkout = "substrate-target-checkout"   # the substrate deployment operates the engine itself: one pinned source, one checkout
+engine_checkout = "fkst-substrate-checkout"     # one pinned source, one checkout: this deployment operates the engine itself
 engine_binary = "engine-binary"
 durable = "substrate-durable"
 runtime = "substrate-runtime"
