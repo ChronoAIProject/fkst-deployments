@@ -1,0 +1,72 @@
+schema = "fkst.ops.deployment.v1"
+
+[[provider]]
+id = "engine"
+kind = "engine"
+implementation = "fkst-ops:providers/engine.py"
+contract = "fkst.ops.engine.v1"
+configuration = { build_command = ["cargo", "build", "-p", "fkst-framework"] }
+
+[[provider]]
+id = "engine-board"
+kind = "board.engine-durable"
+implementation = "fkst-ops:providers/board_engine_durable.py"
+contract = "fkst.ops.board.engine-durable.v1"
+configuration = {}
+
+[[provider]]
+id = "github-board"
+kind = "board.github-control"
+implementation = "fkst-ops:providers/board_github_control.sh"
+contract = "fkst.ops.board.github-control.v1"
+configuration = {}
+
+[[deployment]]
+id = "packages"
+target_identity = "ChronoAIProject/fkst-packages"
+
+[deployment.github_devloop_profile]
+version = "1"
+id = "fleet-github-devloop-policy"
+data = { upstream_branch = "dev", integration_branch = "integration", rollup_merge = "auto", poll_label_prefix = "fkst-dev:", organization = "ChronoAIProject", authorize_org_members = 0 }
+producer_binding = "github-board"
+
+[deployment.sources.target]
+lock_ref = "fkst-packages"
+[deployment.sources.platform]
+lock_ref = "fkst-packages"
+[deployment.sources.engine]
+lock_ref = "fkst-substrate"
+
+[deployment.packages]
+platform = [
+  "github-devloop", "github-devloop-pr", "github-devloop-integration",
+  "github-devloop-intake", "github-devloop-workflow", "github-devloop-decompose",
+  "github-devloop-ops", "github-proxy", "github-external-pr-intake",
+  "github-ratchet-migration-slicer", "fkst-substrate-ref-maintainer",
+  "integration-coverage-producer", "idle-detector", "git-branch-detector",
+  "github-devloop-worktree-gc",
+]
+host = []
+
+[deployment.integration]
+upstream_branch = "dev"
+integration_branch = "machine:integration-branch"
+rollup_merge = "auto"
+
+[deployment.machine]
+target_checkout = "packages-checkout"
+platform_checkout = "packages-checkout"
+engine_checkout = "engine-checkout"
+engine_binary = "engine-binary"
+durable = "packages-durable"
+runtime = "packages-runtime"
+logs = "packages-logs"
+rate_pool = "shared-rate-pool"
+bot_login = "github-bot-login"
+managed_bot_set = "managed-bot-logins"
+
+[deployment.providers]
+engine = "engine"
+board_engine_durable = "engine-board"
+board_github_control = "github-board"

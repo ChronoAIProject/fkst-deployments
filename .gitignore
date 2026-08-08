@@ -4,7 +4,7 @@
 machine-profile.toml
 .env
 
-# Runtime hydration target. The bootstrap clones the pinned mechanism here.
+# Machine-local checkout and runtime locations.
 .fkst/run/
 checkouts/
 

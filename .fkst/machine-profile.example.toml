@@ -1,0 +1,32 @@
+schema = "fkst.ops.machine-profile.v1"
+
+# Replace every angle-bracket placeholder locally. Do not commit machine values.
+[roots]
+packages-checkout = "<absolute DOGFOOD_ROOT-derived packages target/platform checkout>"
+packages-durable = "<absolute durable root, preserving DUR_PACKAGES override>"
+packages-runtime = "<absolute packages runtime root>"
+packages-logs = "<absolute packages log root>"
+substrate-target-checkout = "<absolute DOGFOOD_ROOT-derived substrate target checkout>"
+substrate-platform-checkout = "<absolute DOGFOOD_ROOT-derived separate packages checkout>"
+substrate-durable = "<absolute durable root, preserving DUR_SUBSTRATE override>"
+substrate-runtime = "<absolute substrate runtime root>"
+substrate-logs = "<absolute substrate log root>"
+website-target-checkout = "<absolute DOGFOOD_ROOT-derived website target checkout>"
+website-platform-checkout = "<absolute DOGFOOD_ROOT-derived separate packages checkout>"
+website-durable = "<absolute durable root, preserving DUR_WEBSITE override>"
+website-runtime = "<absolute website runtime root>"
+website-logs = "<absolute website log root>"
+engine-checkout = "<absolute fkst-substrate engine checkout>"
+shared-rate-pool = "<absolute rate-pool root>"
+
+[binaries]
+engine-binary = "<absolute fkst-framework executable path>"
+
+[credentials]
+github-bot-login = "<bot login for this machine>"
+
+[sets]
+managed-bot-logins = ["<managed bot login>"]
+
+[defaults]
+integration-branch = "<per-device integration branch>"
