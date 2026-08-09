@@ -50,7 +50,7 @@ managed_bot_logins = ["fkst-loning-s-macbook-m5[bot]"]
 # an unattended restart cannot silently change it. Held at the posture peers use;
 # changing it is a fleet-wide decision, not one this deployment makes alone.
 [deployment.claim_posture]
-mode = "assignee"
+mode = "label"
 label_exclusive = false
 
 [deployment.github_devloop_profile]
