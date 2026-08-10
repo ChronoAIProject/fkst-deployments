@@ -49,6 +49,16 @@ managed_bot_logins = ["fkst-loning-s-macbook-m5[bot]"]
 # life and peers must agree about it. The write stance is also declared above so
 # an unattended restart cannot silently change it. Held at the posture peers use;
 # changing it is a fleet-wide decision, not one this deployment makes alone.
+# Which issue authors this deployment will intake. The platform reads these as
+# an allowlist plus two membership flags; without them it declines every author
+# other than its own bot, which is what left this appliance idle after the
+# mechanism extraction. Narrow on purpose: the repository owner by name, no
+# blanket org-member or collaborator grant.
+[deployment.author_authorization]
+authorized_logins = ["loning"]
+authorize_org_members = false
+authorize_repo_collaborators = false
+
 [deployment.claim_posture]
 mode = "label"
 label_exclusive = false
@@ -56,7 +66,7 @@ label_exclusive = false
 [deployment.github_devloop_profile]
 version = "1"
 id = "fleet-github-devloop-policy"
-data = { upstream_branch = "dev", integration_branch = "integration", rollup_merge = "auto", poll_label_prefix = "fkst-dev:", organization = "ChronoAIProject", authorize_org_members = 0 }
+data = { upstream_branch = "dev", integration_branch = "integration", rollup_merge = "auto", poll_label_prefix = "fkst-dev:", organization = "ChronoAIProject" }
 producer_binding = "github-board"
 
 [deployment.sources.target]
