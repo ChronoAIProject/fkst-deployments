@@ -1,13 +1,15 @@
 [[external_source]]
 id = "fkst-ops"
 git = "https://github.com/ChronoAIProject/fkst-ops.git"
+checkout_role = "mechanism"
 [external_source.resolved]
-rev = "cb4ab39e1ca5cc7b6cb761e2551afc84628270e4"
-tree_sha256 = "sha256-41999e3b7fcbab8bd7288be58b5074d45ea3f8307a929d8a162cb86e39a1e2d3"
+rev = "91f09d7f3396da83fdc30944e4adfefa0dc86f40"
+tree_sha256 = "sha256-18c1803384d52f5f1e165806ecb6f2ea72e34e3ddc59086f8f86c30e6ec3291d"
 
 [[external_source]]
 id = "fkst-packages"
 git = "https://github.com/ChronoAIProject/fkst-packages.git"
+checkout_role = "deployment-operated"
 [external_source.resolved]
 rev = "2f92ae34a3e74abe7acc7845a1c9fa4585c81629"
 tree_sha256 = "sha256-53811e7833f5611c7e52c2cf07314ef5aa2f85ce9261a9c8eebddd2e6a72f364"
@@ -15,6 +17,7 @@ tree_sha256 = "sha256-53811e7833f5611c7e52c2cf07314ef5aa2f85ce9261a9c8eebddd2e6a
 [[external_source]]
 id = "fkst-substrate"
 git = "https://github.com/ChronoAIProject/fkst-substrate.git"
+checkout_role = "deployment-operated"
 [external_source.resolved]
 rev = "fd3e4c924cd9136c326c03032fe704edf029e5c0"
 tree_sha256 = "sha256-ec689e9fac789872ffb586861325f4c7e8481978e9fb54939d4da98097d4744e"
@@ -22,6 +25,7 @@ tree_sha256 = "sha256-ec689e9fac789872ffb586861325f4c7e8481978e9fb54939d4da98097
 [[external_source]]
 id = "fkst-website"
 git = "https://github.com/ChronoAIProject/fkst-website.git"
+checkout_role = "deployment-operated"
 [external_source.resolved]
 rev = "fd3cc37505071d0e47c749069953754de0b596e3"
 tree_sha256 = "sha256-56fef8a88a171e3acd5087198438d63dcdbca2291988e4412fd3a6ff65d6c378"
