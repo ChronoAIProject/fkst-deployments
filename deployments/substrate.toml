@@ -66,7 +66,14 @@ label_exclusive = false
 [deployment.github_devloop_profile]
 version = "1"
 id = "fleet-github-devloop-policy"
-data = { upstream_branch = "dev", integration_branch = "integration", rollup_merge = "auto", poll_label_prefix = "fkst-dev:", organization = "ChronoAIProject" }
+# Deployment-owned values for the board fact tool. Empty on purpose: every key this
+# block used to carry restated a fact another owner already holds — the branch
+# topology belongs to [deployment.integration], the organization is the first
+# segment of target_identity, and the state-label prefix belongs to the platform
+# that defines those labels. A restated fact is a second source that can disagree,
+# and this one did: it named a shared integration branch while the deployment runs
+# a per-appliance one.
+data = {}
 producer_binding = "github-board"
 
 [deployment.sources.target]
