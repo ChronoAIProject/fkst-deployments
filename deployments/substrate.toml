@@ -55,7 +55,7 @@ managed_bot_logins = ["fkst-loning-s-macbook-m5[bot]"]
 # mechanism extraction. Narrow on purpose: the repository owner by name, no
 # blanket org-member or collaborator grant.
 [deployment.author_authorization]
-authorized_logins = ["loning"]
+authorized_logins = ["loning", "wanghuan-520"]
 authorize_org_members = false
 authorize_repo_collaborators = false
 
