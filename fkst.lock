@@ -3,8 +3,8 @@ id = "fkst-ops"
 git = "https://github.com/ChronoAIProject/fkst-ops.git"
 checkout_role = "mechanism"
 [external_source.resolved]
-rev = "8f182a66fcf77660fc86a78310b567481ea42678"
-tree_sha256 = "sha256-3ebad4a6d826b2e959d2387ab16761b93bb47a789f67d5ee00ce11798ed70a9d"
+rev = "b57645ba67cc2f6c0356420342edfc9c41d38c77"
+tree_sha256 = "sha256-965ddbe6e6eccbbf4fcd8fc0329c33c7fe3819da48105197826397f8bc88d556"
 
 [[external_source]]
 id = "fkst-packages"
