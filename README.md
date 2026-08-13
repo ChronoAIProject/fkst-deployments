@@ -51,9 +51,9 @@ cp .fkst/machine-profile.example.toml .fkst/machine-profile.toml
 
 Replace every angle-bracket placeholder in the copy. The
 [`example profile`](.fkst/machine-profile.example.toml) names the required
-checkout, durable, runtime, log, shared rate-pool, engine-binary, bot-login,
-managed-bot-set, and integration-branch values. Paths under `roots` and
-`binaries` must be absolute. Target, platform, engine, durable, and declared
+checkout, durable, runtime, log, shared rate-pool, engine-binary, discovered-tool,
+bot-login, managed-bot-set, and integration-branch values. Paths under `roots`,
+`binaries`, and `tools` must be absolute. Target, platform, engine, durable, and declared
 package directories must exist; the engine binary must exist and be executable,
 as enforced by the
 [validator](https://github.com/ChronoAIProject/fkst-ops/blob/18cfb18d74d74ec2927d6b2531d07985c69bb9ff/schema/validator.py#L151-L204).
@@ -61,11 +61,18 @@ as enforced by the
 `.fkst/machine-profile.toml` is ignored and must never be committed. It contains
 machine paths, managed identities, and machine defaults.
 
-Both declarations take their integration branch from that profile. The branch
-is named for the bot app driving the machine, with the `[bot]` suffix removed,
-because the bot is the integrating actor. On the current machine it is
-`integration-fkst-loning-s-macbook-m5` for both targets, with `dev` as the
-declared upstream branch.
+Both declarations take their integration branch from that profile: each names it
+as `machine:integration-branch`, which the mechanism resolves against `[defaults]`
+in the profile. The branch is named for the bot app driving the machine, with the
+`[bot]` suffix removed, because the bot is the integrating actor. Its value is
+therefore machine truth and is not committed here; `dev` is the declared upstream
+branch for both targets.
+
+`managed_bot_logins` is the one machine-named value the declarations still carry
+literally. The pinned mechanism accepts no logical reference for it and requires
+the profile's `managed-bot-logins` set to equal it exactly, so a machine whose bot
+app differs cannot operate these declarations honestly until the mechanism grows
+the same `machine:` form the integration branch uses.
 
 ## Preflight and operate
 

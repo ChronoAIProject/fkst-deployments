@@ -96,7 +96,11 @@ host = []
 
 [deployment.integration]
 upstream_branch = "dev"
-integration_branch = "integration-fkst-loning-s-macbook-m5"
+# Machine truth, referenced by logical name. The branch is named for the bot app
+# driving the machine, so its value changes per machine while this declaration does
+# not. The mechanism resolves a "machine:" reference against [defaults] in the
+# machine profile, which is the ignored, machine-local file.
+integration_branch = "machine:integration-branch"
 rollup_merge = "auto"
 
 [deployment.machine]

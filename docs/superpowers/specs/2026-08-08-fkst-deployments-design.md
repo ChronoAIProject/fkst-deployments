@@ -41,7 +41,15 @@ package composition, integration policy, the GitHub devloop profile, and
 provider bindings. Machine truth includes absolute checkout, durable, runtime,
 log, rate-pool, and binary paths; bot identity; managed bot membership; and the
 machine-default integration branch. Machine truth stays in the ignored machine
-profile and is referenced only by logical name.
+profile and is referenced only by logical name. `[deployment.machine]` fields
+name their logical values directly; `integration_branch` reaches the profile's
+`[defaults]` through a `machine:` prefix, so no declaration carries a branch
+value that differs per machine.
+
+`managed_bot_logins` is the standing exception. The mechanism requires it as a
+literal one-element list and compares the profile's resolved `managed-bot-set`
+against it, so this machine-named value stays in committed configuration until
+the mechanism accepts a `machine:` reference there too.
 
 `BOT` and `MANAGED_BOT_LOGINS` are machine values and must never appear in
 `github_devloop_profile.data`.
