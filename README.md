@@ -51,9 +51,9 @@ cp .fkst/machine-profile.example.toml .fkst/machine-profile.toml
 
 Replace every angle-bracket placeholder in the copy. The
 [`example profile`](.fkst/machine-profile.example.toml) names the required
-checkout, durable, runtime, log, shared rate-pool, engine-binary, bot-login,
-managed-bot-set, and integration-branch values. Paths under `roots` and
-`binaries` must be absolute. Target, platform, engine, durable, and declared
+checkout, durable, runtime, log, shared rate-pool, engine-binary, discovered-tool,
+bot-login, managed-bot-set, and integration-branch values. Paths under `roots`,
+`binaries`, and `tools` must be absolute. Target, platform, engine, durable, and declared
 package directories must exist; the engine binary must exist and be executable,
 as enforced by the
 [validator](https://github.com/ChronoAIProject/fkst-ops/blob/18cfb18d74d74ec2927d6b2531d07985c69bb9ff/schema/validator.py#L151-L204).
@@ -61,11 +61,37 @@ as enforced by the
 `.fkst/machine-profile.toml` is ignored and must never be committed. It contains
 machine paths, managed identities, and machine defaults.
 
-Both declarations take their integration branch from that profile. The branch
-is named for the bot app driving the machine, with the `[bot]` suffix removed,
-because the bot is the integrating actor. On the current machine it is
-`integration-fkst-loning-s-macbook-m5` for both targets, with `dev` as the
-declared upstream branch.
+Both declarations take their integration branch from that profile: each names it
+as `machine:integration-branch`, which the mechanism resolves against `[defaults]`
+in the profile. The branch is named for the actor driving the machine, because the
+actor is the integrating party. Its value is therefore machine truth and is not
+committed here; `dev` is the declared upstream branch for both targets.
+
+## Operating identity: an App or a person
+
+A machine may be driven by a GitHub App installation or by a person's own account.
+The mechanism does not distinguish them. `[credentials] github-bot-login` in the
+machine profile and every entry of `deployment.managed_bot_logins` hold a login,
+not an account type: an App identity carries the `[bot]` suffix, a personal
+account does not. The platform strips a trailing `[bot]` before comparing and is
+otherwise case-sensitive, so a personal login must be written exactly as GitHub
+spells it.
+
+The field is named `managed_bot_logins` for historical reasons and now also holds
+personal logins; the name is narrower than the values it carries. Renaming it is a
+mechanism change and is deliberately not done here.
+
+What the roster means is unchanged either way: these are the logins whose activity
+this fleet treats as its own automation rather than as an outside contribution.
+
+`managed_bot_logins` is fleet policy: it lists every actor in the fleet, so one
+committed declaration serves every machine. Each machine's own actor is machine
+truth and lives in its profile; the mechanism binds the two by requiring the
+profile's actor to be a member of the declared roster. Earlier text here described
+this field as a single machine-named value, which the mechanism no longer requires
+the profile's `managed-bot-logins` set to equal it exactly, so a machine whose bot
+app differs cannot operate these declarations honestly until the mechanism grows
+the same `machine:` form the integration branch uses.
 
 ## Preflight and operate
 

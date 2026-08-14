@@ -42,7 +42,15 @@ target_identity = "ChronoAIProject/fkst-substrate"
 github_write_enabled = true
 # Collaborating managed-bot logins: authorization membership is deployment policy,
 # declared here rather than discovered from the machine.
-managed_bot_logins = ["fkst-loning-s-macbook-m5[bot]"]
+# 机队成员的操作身份。FKST 既可由 GitHub App 的 bot 账户驱动，也可由人的账户驱动，
+# 两者在此一视同仁：本列表登记的是「哪些登录名属于本机队的自动化」，而非账户类型。
+# 带 [bot] 后缀的是 App 身份；不带后缀的是人类账户身份。
+managed_bot_logins = [
+  "macstudio-4[bot]",                       # App
+  "fkst-loning-s-macbook-m5[bot]",          # App
+  "fkst-loning-s-chrono-macbook-pro[bot]",  # App
+  "ElonSG",                                 # 人类账户驱动的 appliance（大小写敏感）
+]
 
 # How this deployment claims work against peer deployments. Declared rather than
 # inherited from an unset variable: it must stay consistent across the deployment's
@@ -96,7 +104,11 @@ host = []
 
 [deployment.integration]
 upstream_branch = "dev"
-integration_branch = "integration-fkst-loning-s-macbook-m5"
+# Machine truth, referenced by logical name. The branch is named for the bot app
+# driving the machine, so its value changes per machine while this declaration does
+# not. The mechanism resolves a "machine:" reference against [defaults] in the
+# machine profile, which is the ignored, machine-local file.
+integration_branch = "machine:integration-branch"
 rollup_merge = "auto"
 
 [deployment.machine]
@@ -109,7 +121,6 @@ runtime = "substrate-runtime"
 logs = "substrate-logs"
 rate_pool = "shared-rate-pool"
 bot_login = "github-bot-login"
-managed_bot_set = "managed-bot-logins"
 
 [deployment.providers]
 github_credential = "github-credential"

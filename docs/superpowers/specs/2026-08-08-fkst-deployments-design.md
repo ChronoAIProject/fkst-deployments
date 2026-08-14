@@ -41,7 +41,34 @@ package composition, integration policy, the GitHub devloop profile, and
 provider bindings. Machine truth includes absolute checkout, durable, runtime,
 log, rate-pool, and binary paths; bot identity; managed bot membership; and the
 machine-default integration branch. Machine truth stays in the ignored machine
-profile and is referenced only by logical name.
+profile and is referenced only by logical name. `[deployment.machine]` fields
+name their logical values directly; `integration_branch` reaches the profile's
+`[defaults]` through a `machine:` prefix, so no declaration carries a branch
+value that differs per machine.
+
+## Operating Identity
+
+A machine's operating actor may be a GitHub App installation or a person's own
+account; the mechanism treats them identically. Both `[credentials]
+github-bot-login` and the entries of `deployment.managed_bot_logins` are logins,
+not account types. An App login carries the `[bot]` suffix and a personal login
+does not; the platform strips a trailing `[bot]` before comparing and is otherwise
+case-sensitive, so a personal login must match GitHub's own spelling exactly.
+
+The roster's meaning does not depend on account type: it enumerates the actors
+whose activity this fleet reads as its own automation rather than as an outside
+contribution. The field name `managed_bot_logins` predates personal-account
+operation and is therefore narrower than the values it now carries; renaming it
+would be a mechanism change and is not made here.
+
+Membership is verifiable. An entry that does not resolve to an existing GitHub
+account is not a pending note but a false entry, and the repository gate requiring
+`ASSUMED-UNVERIFIED` to occur zero times in every declaration applies to it.
+
+`managed_bot_logins` is the standing exception. The mechanism requires it as a
+literal one-element list and compares the profile's resolved `managed-bot-set`
+against it, so this machine-named value stays in committed configuration until
+the mechanism accepts a `machine:` reference there too.
 
 `BOT` and `MANAGED_BOT_LOGINS` are machine values and must never appear in
 `github_devloop_profile.data`.
