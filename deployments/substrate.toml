@@ -5,6 +5,14 @@ schema = "fkst.ops.deployment.v1"
 cadence_enabled = true
 cadence_interval_seconds = 900
 
+# 守护：cadence 观察到该部署 STOPPED 时，最多连续尝试重启多少轮。
+# 与上面两条同为 repository-level policy：必填，机制不持默认值。
+# 0 = 不启用守护，调用序列与记账与不带该字段时完全一致。
+# 取 3 的依据：3 x cadence_interval_seconds = 45 分钟恢复窗口，与已观察到的
+# 故障节奏相称；且它把机队级放大倍数钉在 台数 x 部署数 x 3，因为每次尝试都走
+# 昂贵的 restart 路径并打同一个共享 GitHub 配额桶。
+guard_restart_attempt_limit = 3
+
 # Collaborating managed-bot logins. Authorization membership is deployment policy,
 # so it is declared here rather than discovered from the machine.
 
