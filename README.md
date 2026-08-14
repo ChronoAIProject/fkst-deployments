@@ -63,13 +63,32 @@ machine paths, managed identities, and machine defaults.
 
 Both declarations take their integration branch from that profile: each names it
 as `machine:integration-branch`, which the mechanism resolves against `[defaults]`
-in the profile. The branch is named for the bot app driving the machine, with the
-`[bot]` suffix removed, because the bot is the integrating actor. Its value is
-therefore machine truth and is not committed here; `dev` is the declared upstream
-branch for both targets.
+in the profile. The branch is named for the actor driving the machine, because the
+actor is the integrating party. Its value is therefore machine truth and is not
+committed here; `dev` is the declared upstream branch for both targets.
 
-`managed_bot_logins` is the one machine-named value the declarations still carry
-literally. The pinned mechanism accepts no logical reference for it and requires
+## Operating identity: an App or a person
+
+A machine may be driven by a GitHub App installation or by a person's own account.
+The mechanism does not distinguish them. `[credentials] github-bot-login` in the
+machine profile and every entry of `deployment.managed_bot_logins` hold a login,
+not an account type: an App identity carries the `[bot]` suffix, a personal
+account does not. The platform strips a trailing `[bot]` before comparing and is
+otherwise case-sensitive, so a personal login must be written exactly as GitHub
+spells it.
+
+The field is named `managed_bot_logins` for historical reasons and now also holds
+personal logins; the name is narrower than the values it carries. Renaming it is a
+mechanism change and is deliberately not done here.
+
+What the roster means is unchanged either way: these are the logins whose activity
+this fleet treats as its own automation rather than as an outside contribution.
+
+`managed_bot_logins` is fleet policy: it lists every actor in the fleet, so one
+committed declaration serves every machine. Each machine's own actor is machine
+truth and lives in its profile; the mechanism binds the two by requiring the
+profile's actor to be a member of the declared roster. Earlier text here described
+this field as a single machine-named value, which the mechanism no longer requires
 the profile's `managed-bot-logins` set to equal it exactly, so a machine whose bot
 app differs cannot operate these declarations honestly until the mechanism grows
 the same `machine:` form the integration branch uses.

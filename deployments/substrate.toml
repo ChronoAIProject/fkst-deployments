@@ -42,12 +42,14 @@ target_identity = "ChronoAIProject/fkst-substrate"
 github_write_enabled = true
 # Collaborating managed-bot logins: authorization membership is deployment policy,
 # declared here rather than discovered from the machine.
+# 机队成员的操作身份。FKST 既可由 GitHub App 的 bot 账户驱动，也可由人的账户驱动，
+# 两者在此一视同仁：本列表登记的是「哪些登录名属于本机队的自动化」，而非账户类型。
+# 带 [bot] 后缀的是 App 身份；不带后缀的是人类账户身份。
 managed_bot_logins = [
-  "macstudio-4[bot]",
-  "fkst-loning-s-macbook-m5[bot]",
-  # ASSUMED-UNVERIFIED: 按 integration-<login-去后缀> 约定从 integration-elonsg 推断。
-  # 该约定在另外两台上均已核实；此条目未获直接证据，合并前请确认。
-  "elonsg[bot]",
+  "macstudio-4[bot]",                       # App
+  "fkst-loning-s-macbook-m5[bot]",          # App
+  "fkst-loning-s-chrono-macbook-pro[bot]",  # App
+  "ElonSG",                                 # 人类账户驱动的 appliance（大小写敏感）
 ]
 
 # How this deployment claims work against peer deployments. Declared rather than
