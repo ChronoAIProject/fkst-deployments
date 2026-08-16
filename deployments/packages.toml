@@ -60,16 +60,19 @@ managed_bot_logins = [
   "ElonSG",                                 # 人类账户驱动的 appliance（大小写敏感）
 ]
 
-# How this deployment claims work against peer deployments. Declared rather than
-# inherited from an unset variable: it must stay consistent across the deployment's
-# life and peers must agree about it. The write stance is also declared above so
-# an unattended restart cannot silently change it. Held at the posture peers use;
-# changing it is a fleet-wide decision, not one this deployment makes alone.
-# Which issue authors this deployment will intake. The platform reads these as
-# an allowlist plus two membership flags; without them it declines every author
-# other than its own bot, which is what left this appliance idle after the
-# mechanism extraction. Narrow on purpose: the repository owner by name, no
-# blanket org-member or collaborator grant.
+# Authors outside the roster above whose issues this deployment will also intake.
+# The active appliances do not belong here: the roster already admits them, and
+# naming them twice would give the same fact two places to drift from. What is
+# left is the human maintainers, who appear in no other list.
+#
+# An earlier comment on this key claimed that without it the platform "declines
+# every author other than its own bot". That is wrong, and reading it that way is
+# what made this appliance look policy-blocked when it was not. The trusted set is
+# a union the platform composes; fkst-packages docs/user/global-host-profiles.md
+# owns that definition.
+#
+# No blanket org-member or collaborator grant: either flag would let any member's
+# issue text steer an unattended appliance.
 [deployment.author_authorization]
 authorized_logins = ["loning", "wanghuan-520"]
 authorize_org_members = false
