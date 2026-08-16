@@ -43,3 +43,11 @@ managed-bot-logins = ["<managed bot login>"]
 # with the "[bot]" suffix removed. One machine, one bot app, one integration branch.
 # Both declarations reach this value as "machine:integration-branch".
 integration-branch = "integration-<bot-app-login-without-bot-suffix>"
+# How this machine authenticates. Machine truth, not fleet policy: an appliance
+# driven by a GitHub App installation uses "github-app", and one driven by a
+# person's own account uses "github-cli-user", which takes the GitHub CLI's
+# stored credential for the declared login. Both declarations reach this value as
+# "machine:credential-source". The two sources prove deliberately different
+# things — see the mechanism's SPEC.md — and "github-cli-user" carries the whole
+# account's authority rather than an installation's repository-scoped authority.
+credential-source = "github-app"

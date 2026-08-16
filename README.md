@@ -88,10 +88,23 @@ this fleet treats as its own automation rather than as an outside contribution.
 committed declaration serves every machine. Each machine's own actor is machine
 truth and lives in its profile; the mechanism binds the two by requiring the
 profile's actor to be a member of the declared roster. Earlier text here described
-this field as a single machine-named value, which the mechanism no longer requires
-the profile's `managed-bot-logins` set to equal it exactly, so a machine whose bot
-app differs cannot operate these declarations honestly until the mechanism grows
-the same `machine:` form the integration branch uses.
+this field as a single machine-named value; the mechanism requires the profile's
+actor to be a member of the declared roster rather than equal to it.
+
+How a machine authenticates is machine truth as well, and it now reaches the
+declarations through the same `machine:` form the integration branch uses. The
+credential provider's `source` is `machine:credential-source`, and each profile
+resolves it to one of two closed values: `github-app` for an appliance driven by a
+GitHub App installation, or `github-cli-user` for one driven by a person's own
+account, which takes the GitHub CLI's stored credential for the declared login.
+
+The two prove deliberately different things, and neither is strictly safer. An
+installation token cannot resolve `/user`, so the App path proves target access but
+not the principal login. The user path compares the login exactly and checks the
+target's reported push permission on every refresh, but the credential carries the
+whole account's authority rather than an installation's repository-scoped authority.
+An appliance that ingests untrusted issue and pull-request text should weigh that
+blast radius deliberately. The mechanism's `SPEC.md` states both limits.
 
 ## Preflight and operate
 
