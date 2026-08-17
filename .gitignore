@@ -1,4 +1,7 @@
-# Machine-local operational state. Never tracked.
+# Machine-local operational state. NEVER tracked: a real machine profile carries
+# absolute paths and credentials.
+.fkst/machine-profile.toml
+machine-profile.toml
 .env
 
 # Machine-local checkout and runtime locations.

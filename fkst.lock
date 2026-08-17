@@ -3,20 +3,29 @@ id = "fkst-ops"
 git = "https://github.com/ChronoAIProject/fkst-ops.git"
 checkout_role = "mechanism"
 [external_source.resolved]
-rev = "f1c128e4fac91e645436923239f0316852866753"
-tree_sha256 = "sha256-26169b3835ff3b0337e859a0aed272e3620e844d7ad455699a687c6157c4dee5"
+rev = "002b78f39e9ddc5fc7b376aa199cf51de3766fe8"
+tree_sha256 = "sha256-6dd10571964d180a756dbd7941390ff610a230784f8a4d9f8082e9075027a8f1"
 
 [[external_source]]
 id = "fkst-packages"
 git = "https://github.com/ChronoAIProject/fkst-packages.git"
 checkout_role = "deployment-operated"
+[external_source.resolved]
+rev = "2f92ae34a3e74abe7acc7845a1c9fa4585c81629"
+tree_sha256 = "sha256-53811e7833f5611c7e52c2cf07314ef5aa2f85ce9261a9c8eebddd2e6a72f364"
 
 [[external_source]]
 id = "fkst-substrate"
 git = "https://github.com/ChronoAIProject/fkst-substrate.git"
 checkout_role = "deployment-operated"
+[external_source.resolved]
+rev = "fd3e4c924cd9136c326c03032fe704edf029e5c0"
+tree_sha256 = "sha256-ec689e9fac789872ffb586861325f4c7e8481978e9fb54939d4da98097d4744e"
 
 [[external_source]]
 id = "fkst-website"
 git = "https://github.com/ChronoAIProject/fkst-website.git"
 checkout_role = "deployment-operated"
+[external_source.resolved]
+rev = "fd3cc37505071d0e47c749069953754de0b596e3"
+tree_sha256 = "sha256-56fef8a88a171e3acd5087198438d63dcdbca2291988e4412fd3a6ff65d6c378"

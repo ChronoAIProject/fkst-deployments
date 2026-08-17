@@ -102,9 +102,6 @@ lock_ref = "fkst-packages"
 [deployment.sources.engine]
 lock_ref = "fkst-substrate"
 
-[deployment.engine_revision]
-path = ".fkst/substrate-ref"
-
 [deployment.packages]
 platform = [
   "github-devloop", "github-devloop-pr", "github-devloop-integration",
@@ -128,7 +125,7 @@ rollup_merge = "auto"
 [deployment.machine]
 target_checkout = "packages-checkout"
 platform_checkout = "packages-checkout"
-engine_checkout = "engine-checkout"
+engine_checkout = "fkst-substrate-checkout"     # the same single checkout of the engine source that the substrate deployment operates
 engine_binary = "engine-binary"
 durable = "packages-durable"
 runtime = "packages-runtime"

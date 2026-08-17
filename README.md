@@ -2,20 +2,17 @@
 
 This public repository is the machine-independent configuration for operating
 FKST's `packages` and `substrate` deployments. It owns deployment declarations,
-source identities, the exact mechanism pin, and documentation. It contains no
-operational code.
+exact source pins, and documentation. It contains no operational code.
 
 It must never contain scripts, programs, executable files, secrets, credentials,
 or machine-specific paths. Those boundaries keep three repository roles separate:
 
-1. [`fkst-ops`](https://github.com/ChronoAIProject/fkst-ops/tree/3a85e4c68cd39d36ba3c8e7b27f924e388a66350)
+1. [`fkst-ops`](https://github.com/ChronoAIProject/fkst-ops/tree/18cfb18d74d74ec2927d6b2531d07985c69bb9ff)
    is the public mechanism. Its entrypoint validates configuration, obtains and
    verifies the pinned mechanism, then dispatches operations.
 2. `fkst-deployments` is public configuration only. [`fkst.lock`](fkst.lock)
-   pins the mechanism by full revision and canonical tree hash and identifies
-   deployment-operated source URLs. The declarations bind those sources to
-   machine-local names and declare where a platform commit carries its engine
-   revision.
+   pins the mechanism and all operated sources by full revision and canonical
+   tree hash; the declarations bind those sources to machine-local names.
 3. `fkst-packages`, `fkst-substrate`, and `fkst-website` are operated targets.
    They do not depend on or invoke `fkst-ops`.
 
@@ -28,30 +25,16 @@ Two declarations ship:
 
 - [`deployments/packages.toml`](deployments/packages.toml) operates
   `fkst-packages`. Its target and platform roles use one checkout; its engine
-  comes from the revision in that platform commit's `.fkst/substrate-ref`.
+  comes from the pinned `fkst-substrate` source.
 - [`deployments/substrate.toml`](deployments/substrate.toml) operates
   `fkst-substrate`. It uses a separate `fkst-packages` platform checkout. The
-  target follows its integration branch for engine development, while the
-  separate shared engine checkout is detached at the revision in that platform
-  commit's `.fkst/substrate-ref`.
-
-Both deployments name the same `engine-binary` stem, but each selected revision
-is published once as the regular file `engine-binary-<E>`. Different platform
-commits may therefore select different engine revisions without a shared pointer
-or agreement check. Reuse recomputes the artifact's receipt-bound SHA-256 digest,
-and host-run receives `E` and rejects a path naming another revision. The set of
-writable records that selects the engine remains the revision file in the
-platform commit.
-
-Only an engine built from the declared source checkout is supported today.
-Released-engine deployment is not supported. A later released-engine case can
-be added as a second `engine_revision` arm while retaining the current `path`
-arm unchanged.
+  target is also the engine source, so target and engine use the same pinned
+  source and checkout.
 
 There is no website declaration. The
 [`fkst-website` workspace manifest](https://github.com/ChronoAIProject/fkst-website/blob/fd3cc37505071d0e47c749069953754de0b596e3/fkst.workspace.toml)
 declares its external platform source without a package composition. The
-[authoritative deriver](https://github.com/ChronoAIProject/fkst-ops/blob/3a85e4c68cd39d36ba3c8e7b27f924e388a66350/ops/workspace_manifest.py#L179-L211)
+[authoritative deriver](https://github.com/ChronoAIProject/fkst-ops/blob/18cfb18d74d74ec2927d6b2531d07985c69bb9ff/ops/workspace_manifest.py#L179-L211)
 therefore reports exactly:
 
 ```text
@@ -60,23 +43,23 @@ error: website: external_sources(id=fkst-packages-platform).packages must not be
 
 ## Machine setup
 
-The machine profile is generated, never copied from this repository or edited by
-hand. From a clean `fkst-ops` checkout whose revision and canonical tree match
-[`fkst.lock`](fkst.lock), run:
+From this repository, create the local profile:
 
 ```sh
-DEPLOYMENT_REPO=$(pwd -P)
-MACHINE_PROFILE="$HOME/.fkst/machine/profile.toml"
-<pinned-fkst-ops-checkout>/bin/fkst-regenerate "$DEPLOYMENT_REPO" \
-  --bot-login <machine-actor-login> \
-  --github-credential-source <github-app-or-github-cli-user>
+cp .fkst/machine-profile.example.toml .fkst/machine-profile.toml
 ```
 
-The generator derives every logical root named by the declarations, including
-`engine-checkout`, and writes the profile to
-`$HOME/.fkst/machine/profile.toml`. It hydrates each checkout from its declared
-source before validation and atomically publishes the profile, declaration
-manifest, and cadence LaunchAgent as one control generation.
+Replace every angle-bracket placeholder in the copy. The
+[`example profile`](.fkst/machine-profile.example.toml) names the required
+checkout, durable, runtime, log, shared rate-pool, engine-binary, discovered-tool,
+bot-login, managed-bot-set, and integration-branch values. Paths under `roots`,
+`binaries`, and `tools` must be absolute. Target, platform, engine, durable, and declared
+package directories must exist; the engine binary must exist and be executable,
+as enforced by the
+[validator](https://github.com/ChronoAIProject/fkst-ops/blob/18cfb18d74d74ec2927d6b2531d07985c69bb9ff/schema/validator.py#L151-L204).
+
+`.fkst/machine-profile.toml` is ignored and must never be committed. It contains
+machine paths, managed identities, and machine defaults.
 
 Both declarations take their integration branch from that profile: each names it
 as `machine:integration-branch`, which the mechanism resolves against `[defaults]`
@@ -137,45 +120,15 @@ change, then rerun generation. An operator who wants automatic adoption must arr
 a separate verified updater for this repository before generation; the cadence itself
 will not cross that control boundary.
 
-For this engine-derivation adoption, the declaration changes and the `fkst-ops`
-`rev`/`tree_sha256` bump in `fkst.lock` must be one deployment commit. The old
-mechanism rejects the new declaration and the new mechanism rejects the old
-declaration, so either crossed state is deliberately inoperable. The executable
-four-cell test is
-`fkst-ops/tests/bootstrap/test_bootstrap.py::BootstrapTest::test_engine_revision_adoption_requires_one_declaration_and_pin_operation`.
-
-Before selecting that deployment commit, quarantine a pre-existing shared engine
-root if it has the known undeclared local origin. The old declarations do not use
-this root, so this recoverable move does not disturb their running pair:
-
-```sh
-ENGINE_ROOT="$HOME/.fkst/machine/roots/engine-checkout"
-DECLARED_ENGINE_ORIGIN="https://github.com/ChronoAIProject/fkst-substrate.git"
-QUARANTINE="$ENGINE_ROOT.pre-derivation-adoption"
-if [ -e "$ENGINE_ROOT" ] || [ -L "$ENGINE_ROOT" ]; then
-  OBSERVED_ENGINE_ORIGIN=$(git -C "$ENGINE_ROOT" remote get-url origin)
-  if [ "$OBSERVED_ENGINE_ORIGIN" != "$DECLARED_ENGINE_ORIGIN" ]; then
-    test ! -e "$QUARANTINE" && test ! -L "$QUARANTINE"
-    mv "$ENGINE_ROOT" "$QUARANTINE"
-  fi
-fi
-```
-
-Then select the one deployment commit and run `fkst-regenerate` once. Hydration
-clones the missing root from the declared origin, and atomic control-generation
-publication cannot expose a new profile with an old declaration manifest, or the
-reverse. Keep the quarantine until post-adoption verification succeeds.
-
 Set `DEPLOYMENT_REPO` to this repository's absolute path and choose `packages`
-or `substrate` as `NAME`, and set `MACHINE_PROFILE` to the generated profile.
-Run the complete entrypoint from any `fkst-ops` checkout; it self-pins through
-[`fkst.lock`](fkst.lock):
+or `substrate` as `NAME`. Run the complete entrypoint from any `fkst-ops`
+checkout; it self-pins through [`fkst.lock`](fkst.lock):
 
 ```sh
 ~/fkst-ops/bin/fkst-ops preflight \
   --deployment-dir "$DEPLOYMENT_REPO" \
   --declaration "$DEPLOYMENT_REPO/deployments/$NAME.toml" \
-  --machine-profile "$MACHINE_PROFILE" \
+  --machine-profile "$DEPLOYMENT_REPO/.fkst/machine-profile.toml" \
   --lock "$DEPLOYMENT_REPO/fkst.lock"
 ```
 
@@ -187,14 +140,14 @@ one action after the four options:
 ~/fkst-ops/bin/fkst-ops \
   --deployment-dir "$DEPLOYMENT_REPO" \
   --declaration "$DEPLOYMENT_REPO/deployments/$NAME.toml" \
-  --machine-profile "$MACHINE_PROFILE" \
+  --machine-profile "$DEPLOYMENT_REPO/.fkst/machine-profile.toml" \
   --lock "$DEPLOYMENT_REPO/fkst.lock" status
 ```
 
 The actions are `board`, `status`, `logs`, `restart`, and `sync`; `status` does
 not mutate the deployment. `doctor` is a separately invocable action on the
 same entrypoint. The exact dispatch surface is defined in
-[`bin/fkst-ops`](https://github.com/ChronoAIProject/fkst-ops/blob/3a85e4c68cd39d36ba3c8e7b27f924e388a66350/bin/fkst-ops#L1-L184).
+[`bin/fkst-ops`](https://github.com/ChronoAIProject/fkst-ops/blob/18cfb18d74d74ec2927d6b2531d07985c69bb9ff/bin/fkst-ops#L1-L184).
 
 Known rough edge: `--deployment-dir` does not derive the declaration, machine
 profile, and lock paths yet, so pass all four paths.
