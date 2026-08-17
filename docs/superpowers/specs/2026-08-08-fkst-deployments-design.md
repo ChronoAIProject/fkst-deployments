@@ -143,16 +143,14 @@ Deployment-operated source entries identify Git repositories and forbid a
 `resolved` table. Only the `fkst-ops` mechanism entry retains an exact revision
 and canonical tree hash. Target and platform checkouts follow the integration
 branch; `engine-checkout` is separate and detached at the revision derived from
-the platform commit. Both deployments share that checkout and `engine-binary`,
-so differing declarations fail closed instead of producing last-writer-wins.
+the platform commit. Both deployments use one binary stem, but publication and
+launch use separate regular files named `engine-binary-<E>`, so differing
+revisions do not contend for a mutable pointer.
 
-The same change widens four surfaces. A declaration can select
-`engine_revision.path`; host-run can accept a captured platform tree distinct
-from the project tree when its source identity and workspace binding agree; the
-engine provider can create or replace the `engine_binary` symlink; and operator
-execution requires the deployment repository through
-`FKST_OPS_DEPLOYMENT_ROOT`. Those additions are stated separately from the
-single-record authority result.
+A declaration can select `engine_revision.path`, and host-run can accept a
+captured platform tree distinct from the project tree when their Git object
+histories prove the repository relationship. The engine provider publishes a
+revision-addressed file create-if-absent and records its content digest.
 
 Only the build-from-source case is addressed today: `engine_revision.path` is
 read from the platform commit and the selected source revision is built in the

@@ -8,7 +8,7 @@ operational code.
 It must never contain scripts, programs, executable files, secrets, credentials,
 or machine-specific paths. Those boundaries keep three repository roles separate:
 
-1. [`fkst-ops`](https://github.com/ChronoAIProject/fkst-ops/tree/cc42b8ee28112b37b7525817a4fe28a3219c605f)
+1. [`fkst-ops`](https://github.com/ChronoAIProject/fkst-ops/tree/3a85e4c68cd39d36ba3c8e7b27f924e388a66350)
    is the public mechanism. Its entrypoint validates configuration, obtains and
    verifies the pinned mechanism, then dispatches operations.
 2. `fkst-deployments` is public configuration only. [`fkst.lock`](fkst.lock)
@@ -35,18 +35,13 @@ Two declarations ship:
   separate shared engine checkout is detached at the revision in that platform
   commit's `.fkst/substrate-ref`.
 
-Both deployments name `engine-checkout` and `engine-binary`. Artifact generation
-and runtime operation fail closed if their platform commits declare different
-engine revisions. The set of writable records that can select which engine
-executes goes from three to one: the engine revision file in the platform
-commit. This is narrower than a general reduction in authority.
-
-The change also widens the mechanism deliberately. A declaration can now select
-`engine_revision.path`; host-run accepts a captured platform tree distinct from
-the project tree when source identity and workspace bindings agree; the engine
-provider creates or replaces the `engine_binary` symlink; and the operator
-requires `FKST_OPS_DEPLOYMENT_ROOT` to validate declarations sharing that
-binary. These are new expressible inputs or mutations, not authority reductions.
+Both deployments name the same `engine-binary` stem, but each selected revision
+is published once as the regular file `engine-binary-<E>`. Different platform
+commits may therefore select different engine revisions without a shared pointer
+or agreement check. Reuse recomputes the artifact's receipt-bound SHA-256 digest,
+and host-run receives `E` and rejects a path naming another revision. The set of
+writable records that selects the engine remains the revision file in the
+platform commit.
 
 Only an engine built from the declared source checkout is supported today.
 Released-engine deployment is not supported. A later released-engine case can
@@ -56,7 +51,7 @@ arm unchanged.
 There is no website declaration. The
 [`fkst-website` workspace manifest](https://github.com/ChronoAIProject/fkst-website/blob/fd3cc37505071d0e47c749069953754de0b596e3/fkst.workspace.toml)
 declares its external platform source without a package composition. The
-[authoritative deriver](https://github.com/ChronoAIProject/fkst-ops/blob/cc42b8ee28112b37b7525817a4fe28a3219c605f/ops/workspace_manifest.py#L179-L211)
+[authoritative deriver](https://github.com/ChronoAIProject/fkst-ops/blob/3a85e4c68cd39d36ba3c8e7b27f924e388a66350/ops/workspace_manifest.py#L179-L211)
 therefore reports exactly:
 
 ```text
@@ -199,7 +194,7 @@ one action after the four options:
 The actions are `board`, `status`, `logs`, `restart`, and `sync`; `status` does
 not mutate the deployment. `doctor` is a separately invocable action on the
 same entrypoint. The exact dispatch surface is defined in
-[`bin/fkst-ops`](https://github.com/ChronoAIProject/fkst-ops/blob/cc42b8ee28112b37b7525817a4fe28a3219c605f/bin/fkst-ops#L1-L184).
+[`bin/fkst-ops`](https://github.com/ChronoAIProject/fkst-ops/blob/3a85e4c68cd39d36ba3c8e7b27f924e388a66350/bin/fkst-ops#L1-L184).
 
 Known rough edge: `--deployment-dir` does not derive the declaration, machine
 profile, and lock paths yet, so pass all four paths.
