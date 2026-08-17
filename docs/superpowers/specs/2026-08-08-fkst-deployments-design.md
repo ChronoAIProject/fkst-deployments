@@ -6,7 +6,7 @@
 ## Purpose
 
 `fkst-deployments` is the version-controlled, machine-independent configuration
-repository for FKST deployments. It owns declarations, source pins, deployment
+repository for FKST deployments. It owns declarations, source identities, deployment
 policy, package composition, and logical references to machine values. All
 operational behavior remains in pinned `fkst-ops`.
 
@@ -24,24 +24,26 @@ fkst-deployments/
 |-- deployments/
 |   |-- packages.toml
 |   `-- substrate.toml
-|-- .fkst/
-|   |-- machine-profile.example.toml
-|   `-- machine-profile.toml          # untracked
 `-- docs/superpowers/specs/
     `-- 2026-08-08-fkst-deployments-design.md
 ```
 
-The lock retains the `fkst-website` source pin so the pending declaration can
+The lock retains the `fkst-website` source identity so the pending declaration can
 land without changing repository-wide source identity.
 
 ## Ownership Boundary
 
 Committed deployment truth includes target identity, source lock references,
+the path that derives the engine revision from a file in the platform commit,
 package composition, integration policy, the GitHub devloop profile, and
-provider bindings. Machine truth includes absolute checkout, durable, runtime,
+provider bindings. The set of writable records that can select which engine
+executes goes from three to one: that revision file in the platform commit.
+This is the narrow authority reduction established by the mechanism. Machine
+truth includes absolute checkout, durable, runtime,
 log, rate-pool, and binary paths; bot identity; managed bot membership; and the
-machine-default integration branch. Machine truth stays in the ignored machine
-profile and is referenced only by logical name. `[deployment.machine]` fields
+machine-default integration branch. Machine truth stays in the generated
+`$HOME/.fkst/machine/profile.toml` and is referenced only by logical name.
+`[deployment.machine]` fields
 name their logical values directly; `integration_branch` reaches the profile's
 `[defaults]` through a `machine:` prefix, so no declaration carries a branch
 value that differs per machine.
@@ -137,10 +139,65 @@ Each declaration binds the three published `fkst-ops` providers: `engine`,
 `board.engine-durable`, and `board.github-control`. The engine build command is
 the shell-free argv `["cargo", "build", "-p", "fkst-framework"]`.
 
+Deployment-operated source entries identify Git repositories and forbid a
+`resolved` table. Only the `fkst-ops` mechanism entry retains an exact revision
+and canonical tree hash. Target and platform checkouts follow the integration
+branch; `engine-checkout` is separate and detached at the revision derived from
+the platform commit. Both deployments share that checkout and `engine-binary`,
+so differing declarations fail closed instead of producing last-writer-wins.
+
+The same change widens four surfaces. A declaration can select
+`engine_revision.path`; host-run can accept a captured platform tree distinct
+from the project tree when its source identity and workspace binding agree; the
+engine provider can create or replace the `engine_binary` symlink; and operator
+execution requires the deployment repository through
+`FKST_OPS_DEPLOYMENT_ROOT`. Those additions are stated separately from the
+single-record authority result.
+
+Only the build-from-source case is addressed today: `engine_revision.path` is
+read from the platform commit and the selected source revision is built in the
+engine checkout. A deployment that consumes a released engine is not supported.
+Such support can later add a second arm to `engine_revision` while preserving
+the existing `path` arm, so today's declarations do not need a breaking change.
+
 This repository owns no bootstrap or executable code. The `bin/fkst-ops`
 entrypoint in an available mechanism checkout verifies its checkout against the
 deployment-owned pin, hydrates the pinned `fkst-ops` mechanism when necessary,
 and re-executes it with the original arguments.
+
+## Engine-derivation adoption
+
+Publish the new mechanism commit first without changing a deployment lock. Then
+land one deployment commit containing both declarations' `engine_revision` and
+separate `engine_checkout` fields together with the new mechanism `rev` and
+`tree_sha256`. These changes are one operation because the old mechanism rejects
+the new declaration shape and the new mechanism rejects the old shape. The real
+pin/re-exec four-cell matrix is executable as:
+
+```sh
+python3 -m pytest -q tests/bootstrap/test_bootstrap.py::BootstrapTest::test_engine_revision_adoption_requires_one_declaration_and_pin_operation
+```
+
+After checking out that deployment commit, use the pinned mechanism's generator:
+
+```sh
+<pinned-fkst-ops-checkout>/bin/fkst-regenerate <deployment-repository> \
+  --bot-login <machine-actor-login> \
+  --github-credential-source <github-app-or-github-cli-user>
+```
+
+That invocation derives the new `engine-checkout` root and atomically publishes
+the profile, declaration manifest, and cadence LaunchAgent under
+`$HOME/.fkst/machine`. Those three control files are one publication operation so
+cadence cannot observe files from different generations. No generated file is
+hand-edited during adoption.
+
+An existing `engine-checkout` whose `origin` is not the declared GitHub URL must
+be moved to a non-conflicting sibling quarantine before the deployment commit is
+selected. The old declarations do not refer to this root. The generator then
+clones the declared source into the missing path; changing the old checkout's
+`origin` in place is not used as provenance remediation. This quarantine step is
+recoverable and does not need to be atomic with control publication.
 
 ## Validation
 
@@ -164,9 +221,9 @@ The mechanism exposes `board`, `status`, `logs`, `restart`, `sync`, and
 `doctor`. Operate it using the configuration-only owner form:
 
 ```sh
-<fkst-ops-checkout>/bin/fkst-ops --deployment-dir <deployment-repository> --declaration <deployment-repository>/deployments/packages.toml --machine-profile <deployment-repository>/.fkst/machine-profile.toml --lock <deployment-repository>/fkst.lock status
+<fkst-ops-checkout>/bin/fkst-ops --deployment-dir <deployment-repository> --declaration <deployment-repository>/deployments/packages.toml --machine-profile "$HOME/.fkst/machine/profile.toml" --lock <deployment-repository>/fkst.lock status
 ```
 
 `packages` remains the first adopter. Adding another deployment requires one
-validated declaration and any new source pin it references, with no source
+validated declaration and any new source binding it references, with no source
 change in `fkst-ops`.
