@@ -1,0 +1,53 @@
+schema = "fkst.ops.machine-profile.v1"
+
+# Machine-local truth. Copy to .fkst/machine-profile.toml, replace every
+# angle-bracket placeholder, and never commit the copy. Every name below is
+# referenced by the live declarations; the mechanism resolves them by logical
+# name, so a machine changes values here without touching committed policy.
+
+[roots]
+# packages deployment: one checkout serves both its target and platform roles.
+packages-checkout = "<absolute DOGFOOD_ROOT-derived packages target/platform checkout>"
+packages-durable = "<absolute durable root, preserving DUR_PACKAGES override>"
+packages-runtime = "<absolute packages runtime root>"
+packages-logs = "<absolute packages log root>"
+# substrate deployment: its target is also the engine source, so one checkout of
+# fkst-substrate serves both roles, and both declarations name it for their engine.
+fkst-substrate-checkout = "<absolute fkst-substrate target/engine checkout>"
+substrate-platform-checkout = "<absolute DOGFOOD_ROOT-derived separate packages checkout>"
+substrate-durable = "<absolute durable root, preserving DUR_SUBSTRATE override>"
+substrate-runtime = "<absolute substrate runtime root>"
+substrate-logs = "<absolute substrate log root>"
+# Shared by both deployments.
+shared-rate-pool = "<absolute rate-pool root>"
+
+[binaries]
+engine-binary = "<absolute fkst-framework executable path>"
+
+[tools]
+# Every bare executable named by a provider *_command. The mechanism refuses to
+# inherit an operator PATH, so each one is discovered here as an absolute path.
+cargo = "<absolute cargo executable path>"
+
+[credentials]
+github-bot-login = "<bot login for this machine>"
+
+[sets]
+# Must equal deployment.managed_bot_logins in every declaration this machine
+# operates: the mechanism compares the resolved set against the declared list.
+managed-bot-logins = ["<managed bot login>"]
+
+[defaults]
+# Derived from the bot app identity that drives this machine, not from a device or
+# person name: the bot is the actor, so the branch it integrates on carries its login
+# with the "[bot]" suffix removed. One machine, one bot app, one integration branch.
+# Both declarations reach this value as "machine:integration-branch".
+integration-branch = "integration-<bot-app-login-without-bot-suffix>"
+# How this machine authenticates. Machine truth, not fleet policy: an appliance
+# driven by a GitHub App installation uses "github-app", and one driven by a
+# person's own account uses "github-cli-user", which takes the GitHub CLI's
+# stored credential for the declared login. Both declarations reach this value as
+# "machine:credential-source". The two sources prove deliberately different
+# things — see the mechanism's SPEC.md — and "github-cli-user" carries the whole
+# account's authority rather than an installation's repository-scoped authority.
+credential-source = "github-app"
