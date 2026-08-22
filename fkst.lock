@@ -19,3 +19,8 @@ checkout_role = "deployment-operated"
 id = "fkst-website"
 git = "https://github.com/ChronoAIProject/fkst-website.git"
 checkout_role = "deployment-operated"
+
+[[external_source]]
+id = "fkst-website-packages"
+git = "https://github.com/ChronoAIProject/fkst-website-packages.git"
+checkout_role = "deployment-operated"

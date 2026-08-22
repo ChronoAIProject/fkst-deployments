@@ -74,7 +74,18 @@ platform = [
   "github-devloop-ops", "github-proxy", "consensus",
   "github-external-pr-intake", "github-ratchet-migration-slicer", "idle-detector",
 ]
-host = ["site-board"]
+# Empty on purpose. A host package resolves inside the target checkout, so anything named here
+# would have to live in fkst-website — which is the one thing that repository is no longer to
+# contain. Its Lua comes from the package source below instead.
+host = []
+
+# fkst-website's own packages, kept in their own repository. Declaring the source here rather
+# than in a `fkst.workspace.toml` inside fkst-website is what lets that repository hold no fkst
+# configuration at all: the composition is described where the deployment is declared.
+[[deployment.package_sources]]
+lock_ref = "fkst-website-packages"
+checkout = "website-packages-checkout"
+packages = ["site-board", "site-radar"]
 
 [deployment.integration]
 upstream_branch = "dev"
