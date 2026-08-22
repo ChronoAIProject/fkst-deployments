@@ -35,7 +35,6 @@ configuration = {}
 [[deployment]]
 id = "website"
 target_identity = "ChronoAIProject/fkst-website"
-github_write_enabled = false
 managed_bot_logins = [
   "macstudio-4[bot]",
   "fkst-loning-s-macbook-m5[bot]",
