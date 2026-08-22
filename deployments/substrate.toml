@@ -106,14 +106,11 @@ lock_ref = "fkst-substrate"
 path = ".fkst/substrate-ref"
 
 [deployment.packages]
-platform = [
-  "github-devloop", "github-devloop-pr", "github-devloop-integration",
-  "github-devloop-intake", "github-devloop-workflow", "github-devloop-decompose",
-  "github-devloop-ops", "github-proxy", "github-external-pr-intake",
-  "github-ratchet-migration-slicer", "fkst-substrate-ref-maintainer",
-  "integration-coverage-producer", "idle-detector", "git-branch-detector",
-  "github-devloop-worktree-gc",
-]
+# platform is intentionally absent. This deployment's composition stays with its target
+# repository's own fkst.workspace.toml, which is the fallback the operator takes. The list
+# that used to sit here had drifted from that manifest by three packages, and moving
+# ownership without reconciling them would have changed which packages the appliance loads.
+# Reconciling them is a separate change that must argue the delta on its own.
 host = []
 
 [deployment.integration]
