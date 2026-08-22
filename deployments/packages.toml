@@ -47,7 +47,6 @@ configuration = {}
 [[deployment]]
 id = "packages"
 target_identity = "ChronoAIProject/fkst-packages"
-github_write_enabled = true
 # Collaborating managed-bot logins: authorization membership is deployment policy,
 # declared here rather than discovered from the machine.
 # 机队成员的操作身份。FKST 既可由 GitHub App 的 bot 账户驱动，也可由人的账户驱动，
