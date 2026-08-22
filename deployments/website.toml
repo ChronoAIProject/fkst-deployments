@@ -79,7 +79,7 @@ host = ["site-board"]
 
 [deployment.integration]
 upstream_branch = "dev"
-integration_branch = "machine:integration-branch"
+integration_branch = "integration"
 rollup_merge = "auto"
 
 [deployment.machine]

@@ -73,11 +73,13 @@ The generator derives every logical root named by the declarations, including
 source before validation and atomically publishes the profile, declaration
 manifest, and cadence LaunchAgent as one control generation.
 
-All declarations take their integration branch from that profile: each names it
-as `machine:integration-branch`, which the mechanism resolves against `[defaults]`
-in the profile. The branch is named for the actor driving the machine, because the
-actor is the integrating party. Its value is therefore machine truth and is not
-committed here; `dev` is the declared upstream branch for both targets.
+The `packages` and `substrate` declarations take their integration branch from
+that profile: each names it as `machine:integration-branch`, which the mechanism
+resolves against `[defaults]` in the profile. The branch is named for the actor
+driving the machine, because the actor is the integrating party. Its value is
+therefore machine truth and is not committed here. The website declaration uses
+its repository's established `integration` branch. `dev` is the declared upstream
+branch for all three targets.
 
 ## Operating identity: an App or a person
 
