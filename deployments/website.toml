@@ -91,6 +91,11 @@ packages = ["site-board", "site-radar"]
 upstream_branch = "dev"
 integration_branch = "integration"
 rollup_merge = "auto"
+# This target is a plain Astro site with no fkst tooling, so the default
+# `scripts/run.sh test-affected` does not exist there. `scripts/check.sh` is the repository's own
+# gate — it builds the site and probes every page in its manifest — and naming it here is what lets
+# that repository stay unaware of fkst while still being verifiable by the operator.
+local_test_command = "scripts/check.sh"
 
 [deployment.machine]
 target_checkout = "website-checkout"
