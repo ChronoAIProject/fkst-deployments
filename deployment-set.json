@@ -1,1 +1,1 @@
-{"schema":"fkst.ops.declaration-input.v1","declarations":["deployments/packages.toml","deployments/substrate.toml"]}
+{"schema":"fkst.ops.declaration-input.v1","declarations":["deployments/packages.toml","deployments/substrate.toml","deployments/website.toml"]}

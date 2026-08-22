@@ -1,7 +1,7 @@
 # fkst-deployments
 
 This public repository is the machine-independent configuration for operating
-FKST's `packages` and `substrate` deployments. It owns deployment declarations,
+FKST's `packages`, `substrate`, and `website` deployments. It owns deployment declarations,
 source identities, the exact mechanism pin, and documentation. It contains no
 operational code.
 
@@ -24,7 +24,7 @@ repositories remain usable without this repository or `fkst-ops`.
 
 ## What ships
 
-Two declarations ship:
+Three declarations ship:
 
 - [`deployments/packages.toml`](deployments/packages.toml) operates
   `fkst-packages`. Its target and platform roles use one checkout; its engine
@@ -34,8 +34,13 @@ Two declarations ship:
   target follows its integration branch for engine development, while the
   separate shared engine checkout is detached at the revision in that platform
   commit's `.fkst/substrate-ref`.
+- [`deployments/website.toml`](deployments/website.toml) operates
+  `fkst-website`. It uses a separate `fkst-packages` platform checkout and loads
+  the platform packages declared by the website workspace alongside the
+  website-owned `site-board` package. GitHub writes are disabled in the
+  declaration.
 
-Both deployments name the same `engine-binary` stem, but each selected revision
+All three deployments name the same `engine-binary` stem, but each selected revision
 is published once as the regular file `engine-binary-<E>`. Different platform
 commits may therefore select different engine revisions without a shared pointer
 or agreement check. Reuse recomputes the artifact's receipt-bound SHA-256 digest,
@@ -47,16 +52,6 @@ Only an engine built from the declared source checkout is supported today.
 Released-engine deployment is not supported. A later released-engine case can
 be added as a second `engine_revision` arm while retaining the current `path`
 arm unchanged.
-
-There is no website declaration. The
-[`fkst-website` workspace manifest](https://github.com/ChronoAIProject/fkst-website/blob/fd3cc37505071d0e47c749069953754de0b596e3/fkst.workspace.toml)
-declares its external platform source without a package composition. The
-[authoritative deriver](https://github.com/ChronoAIProject/fkst-ops/blob/3a85e4c68cd39d36ba3c8e7b27f924e388a66350/ops/workspace_manifest.py#L179-L211)
-therefore reports exactly:
-
-```text
-error: website: external_sources(id=fkst-packages-platform).packages must not be empty
-```
 
 ## Machine setup
 
@@ -78,11 +73,13 @@ The generator derives every logical root named by the declarations, including
 source before validation and atomically publishes the profile, declaration
 manifest, and cadence LaunchAgent as one control generation.
 
-Both declarations take their integration branch from that profile: each names it
-as `machine:integration-branch`, which the mechanism resolves against `[defaults]`
-in the profile. The branch is named for the actor driving the machine, because the
-actor is the integrating party. Its value is therefore machine truth and is not
-committed here; `dev` is the declared upstream branch for both targets.
+The `packages` and `substrate` declarations take their integration branch from
+that profile: each names it as `machine:integration-branch`, which the mechanism
+resolves against `[defaults]` in the profile. The branch is named for the actor
+driving the machine, because the actor is the integrating party. Its value is
+therefore machine truth and is not committed here. The website declaration uses
+its repository's established `integration` branch. `dev` is the declared upstream
+branch for all three targets.
 
 ## Operating identity: an App or a person
 
@@ -166,8 +163,8 @@ clones the missing root from the declared origin, and atomic control-generation
 publication cannot expose a new profile with an old declaration manifest, or the
 reverse. Keep the quarantine until post-adoption verification succeeds.
 
-Set `DEPLOYMENT_REPO` to this repository's absolute path and choose `packages`
-or `substrate` as `NAME`, and set `MACHINE_PROFILE` to the generated profile.
+Set `DEPLOYMENT_REPO` to this repository's absolute path and choose `packages`,
+`substrate`, or `website` as `NAME`, and set `MACHINE_PROFILE` to the generated profile.
 Run the complete entrypoint from any `fkst-ops` checkout; it self-pins through
 [`fkst.lock`](fkst.lock):
 
@@ -198,11 +195,5 @@ same entrypoint. The exact dispatch surface is defined in
 
 Known rough edge: `--deployment-dir` does not derive the declaration, machine
 profile, and lock paths yet, so pass all four paths.
-
-## Open rollout work
-
-- No deployment has cut over from the previous operator.
-- The five-action equivalence matrix has not run against both real entries.
-- The website deployment is pending its platform composition.
 
 ⟦AI:FKST⟧
