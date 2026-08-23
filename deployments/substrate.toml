@@ -105,12 +105,20 @@ lock_ref = "fkst-substrate"
 path = ".fkst/substrate-ref"
 
 [deployment.packages]
-# platform is intentionally absent. This deployment's composition stays with its target
-# repository's own fkst.workspace.toml, which is the fallback the operator takes. The list
-# that used to sit here had drifted from that manifest by three packages, and moving
-# ownership without reconciling them would have changed which packages the appliance loads.
-# Reconciling them is a separate change that must argue the delta on its own.
+# Declared here rather than left to the target's own manifest, so every deployment in the fleet
+# is composed the same way: the declaration says what runs, and the operated repository does not
+# have to describe how it is operated. The list is the set the supervise actually loads, taken
+# from the engine's own PKG_VERS provenance rather than from the manifest it replaces — #40
+# removed an earlier list precisely because it had drifted from what was running.
+platform = [
+  "consensus", "fkst-substrate-ref-maintainer", "github-devloop",
+  "github-devloop-decompose", "github-devloop-intake", "github-devloop-integration",
+  "github-devloop-ops", "github-devloop-pr", "github-devloop-workflow",
+  "github-external-pr-intake", "github-proxy", "github-ratchet-migration-slicer",
+  "idle-detector", "integration-coverage-producer",
+]
 host = []
+
 
 [deployment.integration]
 upstream_branch = "dev"
