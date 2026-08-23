@@ -89,7 +89,7 @@ packages = ["site-board", "site-radar"]
 
 [deployment.integration]
 upstream_branch = "dev"
-integration_branch = "integration"
+integration_branch = "machine:integration-branch"
 rollup_merge = "auto"
 # This target is a plain Astro site with no fkst tooling, so the default
 # `scripts/run.sh test-affected` does not exist there. `scripts/check.sh` is the repository's own
