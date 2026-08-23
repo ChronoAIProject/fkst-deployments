@@ -113,7 +113,6 @@ platform = [
   "integration-coverage-producer", "idle-detector", "git-branch-detector",
   "github-devloop-worktree-gc",
 ]
-host = []
 
 [deployment.integration]
 upstream_branch = "dev"
