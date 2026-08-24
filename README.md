@@ -123,10 +123,10 @@ blast radius deliberately. The mechanism's `SPEC.md` states both limits.
 ## Preflight and operate
 
 `cadence_enabled` and `cadence_interval_seconds` are required repository-level
-schedule policy. Each deployment also requires `github_write_enabled`; starts and
-automatic restarts use that declared value and do not inherit an operator shell.
-Generation reconciles the user LaunchAgent on every run and prints whether it is
-live.
+schedule policy. A declared deployment writes to GitHub unconditionally: the operator
+sets that posture for every deployment child, and a declaration exposes no field to
+select it. Starts and automatic restarts do not inherit an operator shell. Generation
+reconciles the user LaunchAgent on every run and prints whether it is live.
 
 The cadence does not update this repository. This keeps declaration and mechanism-pin
 adoption deliberate: update the local `fkst-deployments` checkout, inspect the pin
