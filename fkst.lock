@@ -3,7 +3,7 @@ id = "fkst-ops"
 git = "https://github.com/ChronoAIProject/fkst-ops.git"
 checkout_role = "mechanism"
 [external_source.resolved]
-rev = "ad9a04597d1fbffdcd264016de201f63675915b3"
+rev = "2e3f17d642226ef8379e1a54194bb11d7641f6c2"
 
 [[external_source]]
 id = "fkst-packages"
